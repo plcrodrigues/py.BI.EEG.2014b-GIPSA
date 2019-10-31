@@ -13,11 +13,22 @@ from distutils.dir_util import copy_tree
 import shutil
 import pandas as pd
 
-BI2014b_URL = 'https://zenodo.org/record/XXXXXX/files/'
+BI2014b_URL = 'https://zenodo.org/record/3267302/files/'
 
 class BrainInvaders2014b():
     '''
-
+    This dataset contains electroencephalographic (EEG) recordings of 38 subjects 
+    playing in pairs to the multi-user version of a visual P300-based Brain-Computer 
+    Interface (BCI) named Brain Invaders (Congedo et al., 2011). The interface uses 
+    the oddball paradigm on a grid of 36 symbols (1 Target, 35 Non-Target) that are 
+    flashed pseudo-randomly to elicit a P300 response, an evoked-potential appearing 
+    about 300ms after stimulation onset. EEG data were recorded using 32 active wet 
+    electrodes per subjects (total: 64 electrodes) during three randomized conditions 
+    (Solo1, Solo2, Collaboration). The experiment took place at GIPSA-lab, Grenoble, 
+    France, in 2014. A full description of the experiment is available at 
+    https://hal.archives-ouvertes.fr/hal-02173958. Python code for manipulating the 
+    data is available at https://github.com/plcrodrigues/py.BI.EEG.2014b-GIPSA. 
+    The ID of this dataset is bi2014b.
     '''
 
     def __init__(self):
@@ -61,32 +72,27 @@ class BrainInvaders2014b():
     def data_path(self, subject, path=None, force_update=False,
                   update_path=None, verbose=None):
 
-        # if subject not in self.subject_list:
-        #     raise(ValueError("Invalid subject number"))
+        if subject not in self.subject_list:
+            raise(ValueError("Invalid subject number"))
 
-        # # check if has the .zip
-        # url = BI2014b_URL + 'subject_' + str(subject).zfill(2) + '.zip'
-        # path_zip = dl.data_path(url, 'BRAININVADERS2014B')
-        # path_folder = path_zip.strip('subject_' + str(subject).zfill(2) + '.zip')
+        # check if has the .zip
+        url = BI2014b_URL + 'group_' + str(subject).zfill(2) + '_mat.zip'
+        path_zip = dl.data_path(url, 'BRAININVADERS2014B')
+        path_folder = path_zip.strip('group_' + str(subject).zfill(2) + '_mat.zip')
 
-        # # check if has to unzip
-        # path_folder_subject = path_folder + 'subject_' + str(subject).zfill(2) + os.sep
-        # if not(os.path.isdir(path_folder_subject)):
-        #     os.mkdir(path_folder_subject)
-        #     print('unzip', path_zip)
-        #     zip_ref = zipfile.ZipFile(path_zip, "r")
-        #     zip_ref.extractall(path_folder_subject)
+        # check if has to unzip
+        path_folder_subject = path_folder + 'group_' + str(subject).zfill(2) + os.sep
+        if not(os.path.isdir(path_folder_subject)):
+            os.mkdir(path_folder_subject)
+            print('unzip', path_zip)
+            zip_ref = zipfile.ZipFile(path_zip, "r")
+            zip_ref.extractall(path_folder_subject)
 
-        # subject_paths = []
+        subject_paths = []
 
-        # # filter the data regarding the experimental conditions
-        # subject_paths.append(path_folder_subject + 'subject_' + str(subject).zfill(2) + '.mat')        
-
-        pair_name = 'group_' + str(subject).zfill(2)
-        file1 = '/localdata/coelhorp/Datasets/gregoire/Final/2014/Experience_B/mat/' + pair_name + '_mat/' + pair_name + '_sujet_01.mat'
-        file2 = '/localdata/coelhorp/Datasets/gregoire/Final/2014/Experience_B/mat/' + pair_name + '_mat/' + pair_name + '_sujet_02.mat'
-        file3 = '/localdata/coelhorp/Datasets/gregoire/Final/2014/Experience_B/mat/' + pair_name + '_mat/' + pair_name + '.mat'
-
-        subject_paths = [file1, file2, file3]
+        # filter the data regarding the experimental conditions
+        subject_paths.append(path_folder_subject + 'group_' + str(subject).zfill(2) + '_sujet_01.mat')        
+        subject_paths.append(path_folder_subject + 'group_' + str(subject).zfill(2) + '_sujet_02.mat')        
+        subject_paths.append(path_folder_subject + 'group_' + str(subject).zfill(2) + '.mat')        
 
         return subject_paths
